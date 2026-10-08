@@ -1,15 +1,39 @@
 use anyhow::{bail, ensure, Result};
-use std::{fs, path::{Path, PathBuf}};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 pub fn validate_relative(value: &str) -> Result<()> {
-    ensure!(!value.is_empty() && value.len() <= 240, "invalid path length");
+    ensure!(
+        !value.is_empty() && value.len() <= 240,
+        "invalid path length"
+    );
     for part in value.split('/') {
-        ensure!(!part.is_empty() && part != "." && part != "..", "unsafe path component");
-        ensure!(part.bytes().all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b)), "unsafe path characters");
+        ensure!(
+            !part.is_empty() && part != "." && part != "..",
+            "unsafe path component"
+        );
+        ensure!(
+            part.bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b)),
+            "unsafe path characters"
+        );
         ensure!(!part.ends_with('.'), "trailing dots are forbidden");
         let stem = part.split('.').next().unwrap_or("").to_ascii_uppercase();
-        ensure!(!matches!(stem.as_str(), "CON" | "PRN" | "AUX" | "NUL" | "CONIN$" | "CONOUT$"), "reserved device path");
-        ensure!(!(stem.len() == 4 && (stem.starts_with("COM") || stem.starts_with("LPT")) && stem.as_bytes()[3].is_ascii_digit()), "reserved device path");
+        ensure!(
+            !matches!(
+                stem.as_str(),
+                "CON" | "PRN" | "AUX" | "NUL" | "CONIN$" | "CONOUT$"
+            ),
+            "reserved device path"
+        );
+        ensure!(
+            !(stem.len() == 4
+                && (stem.starts_with("COM") || stem.starts_with("LPT"))
+                && stem.as_bytes()[3].is_ascii_digit()),
+            "reserved device path"
+        );
     }
     Ok(())
 }
@@ -26,9 +50,15 @@ pub fn within(root: &Path, relative: &str) -> Result<PathBuf> {
                 #[cfg(windows)]
                 {
                     use std::os::windows::fs::MetadataExt;
-                    ensure!(meta.file_attributes() & 0x400 == 0, "reparse point in managed path");
+                    ensure!(
+                        meta.file_attributes() & 0x400 == 0,
+                        "reparse point in managed path"
+                    );
                 }
-                ensure!(path.canonicalize()?.starts_with(root), "path escapes data root");
+                ensure!(
+                    path.canonicalize()?.starts_with(root),
+                    "path escapes data root"
+                );
             }
             Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
             Err(e) => bail!(e),
@@ -47,7 +77,19 @@ mod tests {
     use super::*;
     #[test]
     fn rejects_cross_platform_traversal_and_devices() {
-        for path in ["../world", "/absolute", "C:/data", "a\\b", "a//b", "a/./b", "a:stream", "CON.txt", "lpt1", "trail.", ""] {
+        for path in [
+            "../world",
+            "/absolute",
+            "C:/data",
+            "a\\b",
+            "a//b",
+            "a/./b",
+            "a:stream",
+            "CON.txt",
+            "lpt1",
+            "trail.",
+            "",
+        ] {
             assert!(validate_relative(path).is_err(), "{path}");
         }
         assert!(validate_relative("libraries/org/example-1.2.jar").is_ok());

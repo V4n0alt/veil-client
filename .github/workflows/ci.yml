@@ -1,6 +1,7 @@
 name: Rust CI
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -53,3 +54,12 @@ jobs:
       - name: Build
         if: ${{ !cancelled() }}
         run: cargo +1.96.0 build --workspace --locked
+      - name: Verify live metadata and offline CLI reuse
+        if: success() && runner.os == 'Linux'
+        shell: bash
+        run: |
+          data_root="$RUNNER_TEMP/veil-smoke"
+          cargo +1.96.0 run --locked -p veil-cli -- resolve "$data_root" 1.21.1
+          cargo +1.96.0 run --locked -p veil-cli -- resolve "$data_root" 1.21.1 --offline
+          cargo +1.96.0 run --locked -p veil-cli -- init "$data_root" vanilla-demo 1.21.1
+          cargo +1.96.0 run --locked -p veil-cli -- java java

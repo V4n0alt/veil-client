@@ -9,7 +9,10 @@ pub struct VersionManifest {
     pub versions: Vec<VersionEntry>,
 }
 #[derive(Deserialize, Debug)]
-pub struct Latest { pub release: String, pub snapshot: String }
+pub struct Latest {
+    pub release: String,
+    pub snapshot: String,
+}
 #[derive(Deserialize, Debug)]
 pub struct VersionEntry {
     pub id: String,
@@ -20,7 +23,10 @@ pub struct VersionEntry {
 }
 impl VersionManifest {
     pub fn find(&self, id: &str) -> Result<&VersionEntry> {
-        self.versions.iter().find(|entry| entry.id == id).context("Minecraft version not found in official manifest")
+        self.versions
+            .iter()
+            .find(|entry| entry.id == id)
+            .context("Minecraft version not found in official manifest")
     }
 }
 
@@ -41,7 +47,10 @@ pub struct Version {
     pub logging: Option<Logging>,
 }
 #[derive(Deserialize, Debug)]
-pub struct JavaVersion { #[serde(rename = "majorVersion")] pub major: u32 }
+pub struct JavaVersion {
+    #[serde(rename = "majorVersion")]
+    pub major: u32,
+}
 #[derive(Deserialize, Debug)]
 pub struct AssetIndexRef {
     pub id: String,
@@ -57,7 +66,10 @@ pub struct AssetIndex {
     pub map_to_resources: bool,
 }
 #[derive(Deserialize, Debug)]
-pub struct Asset { pub hash: String, pub size: u64 }
+pub struct Asset {
+    pub hash: String,
+    pub size: u64,
+}
 #[derive(Deserialize, Debug)]
 pub struct Library {
     pub name: String,
@@ -67,18 +79,29 @@ pub struct Library {
     pub natives: Option<BTreeMap<String, String>>,
 }
 #[derive(Deserialize, Debug)]
-pub struct LibraryDownloads { pub artifact: Option<Artifact> }
+pub struct LibraryDownloads {
+    pub artifact: Option<Artifact>,
+}
 #[derive(Deserialize, Debug)]
-pub struct Arguments { pub game: Vec<Argument>, pub jvm: Vec<Argument> }
+pub struct Arguments {
+    pub game: Vec<Argument>,
+    pub jvm: Vec<Argument>,
+}
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
 pub enum Argument {
     Plain(String),
-    Conditional { rules: Vec<Rule>, value: ArgumentValue },
+    Conditional {
+        rules: Vec<Rule>,
+        value: ArgumentValue,
+    },
 }
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
-pub enum ArgumentValue { One(String), Many(Vec<String>) }
+pub enum ArgumentValue {
+    One(String),
+    Many(Vec<String>),
+}
 #[derive(Deserialize, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct Rule {
@@ -89,42 +112,88 @@ pub struct Rule {
 }
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "lowercase")]
-pub enum Action { Allow, Disallow }
+pub enum Action {
+    Allow,
+    Disallow,
+}
 #[derive(Deserialize, Debug)]
 #[serde(deny_unknown_fields)]
-pub struct OsRule { pub name: Option<String>, pub arch: Option<String>, pub version: Option<String> }
+pub struct OsRule {
+    pub name: Option<String>,
+    pub arch: Option<String>,
+    pub version: Option<String>,
+}
 #[derive(Deserialize, Debug)]
-pub struct Logging { pub client: LoggingClient }
+pub struct Logging {
+    pub client: LoggingClient,
+}
 #[derive(Deserialize, Debug)]
-pub struct LoggingClient { pub argument: String, pub file: LoggingFile }
+pub struct LoggingClient {
+    pub argument: String,
+    pub file: LoggingFile,
+}
 #[derive(Deserialize, Debug)]
-pub struct LoggingFile { pub id: String, #[serde(flatten)] pub artifact: Artifact }
+pub struct LoggingFile {
+    pub id: String,
+    #[serde(flatten)]
+    pub artifact: Artifact,
+}
 
-pub struct Platform { pub os: String, pub arch: String, pub version: Option<String> }
+pub struct Platform {
+    pub os: String,
+    pub arch: String,
+    pub version: Option<String>,
+}
 impl Platform {
     pub fn current() -> Result<Self> {
-        ensure!(std::env::consts::ARCH == "x86_64", "Phase 1 currently supports x86-64 hosts only");
+        ensure!(
+            std::env::consts::ARCH == "x86_64",
+            "Phase 1 currently supports x86-64 hosts only"
+        );
         let os = match std::env::consts::OS {
-            "windows" => "windows", "linux" => "linux", "macos" => "osx",
+            "windows" => "windows",
+            "linux" => "linux",
+            "macos" => "osx",
             _ => anyhow::bail!("unsupported operating system"),
         };
-        Ok(Self { os: os.into(), arch: "x86_64".into(), version: None })
+        Ok(Self {
+            os: os.into(),
+            arch: "x86_64".into(),
+            version: None,
+        })
     }
 }
 
 pub fn allowed(rules: &[Rule], platform: &Platform, demo: bool) -> Result<bool> {
-    if rules.is_empty() { return Ok(true); }
+    if rules.is_empty() {
+        return Ok(true);
+    }
     let mut result = false;
     for rule in rules {
         if let Some(os) = &rule.os {
-            if os.name.as_ref().is_some_and(|name| *name != platform.os) { continue; }
-            if os.arch.as_ref().is_some_and(|arch| *arch != platform.arch) { continue; }
+            if os.name.as_ref().is_some_and(|name| *name != platform.os) {
+                continue;
+            }
+            if os.arch.as_ref().is_some_and(|arch| *arch != platform.arch) {
+                continue;
+            }
             if let Some(pattern) = &os.version {
-                let version = platform.version.as_ref().context("OS-version-specific rules are not supported on this host yet")?;
-                if !regex::Regex::new(pattern)?.is_match(version) { continue; }
+                let version = platform
+                    .version
+                    .as_ref()
+                    .context("OS-version-specific rules are not supported on this host yet")?;
+                if !regex::Regex::new(pattern)?.is_match(version) {
+                    continue;
+                }
             }
         }
-        if rule.features.iter().any(|(name, expected)| *expected != (name == "is_demo_user" && demo)) { continue; }
+        if rule
+            .features
+            .iter()
+            .any(|(name, expected)| *expected != (name == "is_demo_user" && demo))
+        {
+            continue;
+        }
         result = matches!(rule.action, Action::Allow);
     }
     Ok(result)
@@ -133,8 +202,18 @@ pub fn allowed(rules: &[Rule], platform: &Platform, demo: bool) -> Result<bool> 
 pub fn resolve(client: &mut Downloader, id: &str, offline: bool) -> Result<Version> {
     let manifest = client.manifest(offline)?;
     let entry = manifest.find(id)?;
-    let artifact = Artifact { url: entry.url.clone(), sha1: entry.sha1.clone(), size: None, path: None };
-    let file = client.artifact(&artifact, &format!("cache/versions/{}.json", artifact.sha1), offline, "Minecraft version metadata")?;
+    let artifact = Artifact {
+        url: entry.url.clone(),
+        sha1: entry.sha1.clone(),
+        size: None,
+        path: None,
+    };
+    let file = client.artifact(
+        &artifact,
+        &format!("cache/versions/{}.json", artifact.sha1),
+        offline,
+        "Minecraft version metadata",
+    )?;
     let version: Version = serde_json::from_reader(File::open(file)?)?;
     ensure!(version.id == id, "version metadata identity mismatch");
     Ok(version)
@@ -145,12 +224,25 @@ mod tests {
     use super::*;
     #[test]
     fn rules_use_last_matching_action_and_deny_by_default() {
-        let rules = serde_json::from_str::<Vec<Rule>>(r#"[{"action":"allow"},{"action":"disallow","os":{"name":"windows"}}]"#).unwrap();
-        let windows = Platform { os: "windows".into(), arch: "x86_64".into(), version: None };
+        let rules = serde_json::from_str::<Vec<Rule>>(
+            r#"[{"action":"allow"},{"action":"disallow","os":{"name":"windows"}}]"#,
+        )
+        .unwrap();
+        let windows = Platform {
+            os: "windows".into(),
+            arch: "x86_64".into(),
+            version: None,
+        };
         assert!(!allowed(&rules, &windows, false).unwrap());
-        let linux = Platform { os: "linux".into(), ..windows };
+        let linux = Platform {
+            os: "linux".into(),
+            ..windows
+        };
         assert!(allowed(&rules, &linux, false).unwrap());
-        let demo = serde_json::from_str::<Vec<Rule>>(r#"[{"action":"allow","features":{"is_demo_user":true}}]"#).unwrap();
+        let demo = serde_json::from_str::<Vec<Rule>>(
+            r#"[{"action":"allow","features":{"is_demo_user":true}}]"#,
+        )
+        .unwrap();
         assert!(!allowed(&demo, &linux, false).unwrap());
         assert!(allowed(&demo, &linux, true).unwrap());
     }
