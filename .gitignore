@@ -1,0 +1,6 @@
+/target/
+/veil-data/
+*.log
+.env
+.env.*
+!.env.example
