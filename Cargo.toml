@@ -1,0 +1,17 @@
+[workspace]
+members = ["crates/veil-core", "crates/veil-cli"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[workspace.dependencies]
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "native-tls"] }
+sha1 = "0.10"
+tempfile = "3.20"
+regex = "1.11"
