@@ -12,7 +12,7 @@ See [start here](CODEX_START_HERE.md), [security](SECURITY.md),
 
 ## Development
 
-Install stable Rust with rustfmt and clippy (Windows: Microsoft C++ build tools
+Install Rust 1.96.0 with rustfmt and clippy (Windows: Microsoft C++ build tools
 for the default MSVC target). Then:
 
 ```sh
@@ -27,9 +27,12 @@ cargo build --workspace --locked
 The implementation includes official version resolution, streamed SHA-1/size
 verification, cache reuse, isolated instances, Java major-version checks,
 modern vanilla classpath/argument construction, and local process logs.
-**Compilation, tests and game launch are currently unverified** because the
-development sandbox denied Rust filesystem canonicalization. See the session
-record before using this code. Formatting still needs to run on a working host.
+Builds, Clippy and unit tests have passed in GitHub Actions on Windows, Linux
+and macOS. Formatting is checked separately. Linux CI also exercises live Mojang
+version resolution, offline cache reuse, instance creation and Java inspection.
+**A real Minecraft launch is still unverified.** The local development sandbox
+continues to deny Rust filesystem canonicalization; CI provides the build and
+test evidence. See the session record for exact scope and results.
 
 After building, use these commands (Windows executable: `target/debug/veil.exe`):
 
@@ -61,15 +64,15 @@ OAuth, loaders, mods and GUI are not implemented. No FPS was measured.
 
 ## Local repository and GitHub
 
-This directory is a Git repository with `main` and
-`feat/phase-one-launcher-core`. It has logical local commits, but no remote.
-The connected GitHub plugin cannot create repositories, and no authenticated
-GitHub CLI was available. The unsupported setup action is to create an empty
-GitHub repository named `veil-client` and grant the connector access to it.
-After that, the existing branches can be pushed and a draft PR opened; do not
-merge until CI and the real launch check pass.
+The remote is [V4n0alt/veil-client](https://github.com/V4n0alt/veil-client).
+Phase 1 lives on `feat/phase-one-launcher-core` in
+[draft PR #1](https://github.com/V4n0alt/veil-client/pull/1).
+The local active branch tracks that remote branch; earlier local-only history
+is preserved in separate branches. Do not merge until CI and the real launch
+check pass.
 
 GitHub Actions checks formatting, Clippy, tests and builds on Windows, Linux
-and macOS. Dependabot covers Rust dependencies and GitHub Actions. The workflow
-has not run remotely. Releases/signing/security audit remain release blockers.
+and macOS. Failed formatting produces a reviewable patch artifact, without
+writing code from CI. Dependabot covers Rust dependencies and GitHub Actions.
+Releases/signing/security audit remain release blockers.
 Railway has no role in this local Phase 1 pipeline, so no service was created.

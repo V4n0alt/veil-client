@@ -1,4 +1,45 @@
-# Session record — 2026-10-06
+# Session record
+
+## 2026-10-08 — GitHub publication and build validation
+
+- The public GitHub repository now exists at
+  https://github.com/V4n0alt/veil-client. The owner added it to the connector's
+  selected repository access after GitHub rejected the initial write.
+- Published three logical project commits and opened draft PR #1. The initial
+  setup commit is on `main`; remaining work is on `feat/phase-one-launcher-core`.
+  The local branch now tracks the remote. Original local-only branches remain
+  available; no history was deleted or force-pushed.
+- GitHub Actions successfully ran Clippy, unit tests and builds on Windows,
+  Ubuntu and macOS. The first run found formatting differences; retrieved the
+  CI-generated patch, verified its SHA-256, and applied it locally. The follow-up
+  run passed the independent format check.
+- Linux and macOS run 11 core tests; Windows runs 10 (the Unix symlink case is
+  conditional). The tests cover hashes, cache corruption, paths, instance/world
+  preservation, rule ordering, Java version parsing and actual Mojang metadata
+  argument construction. No full game installation or graphics launch test yet.
+- Added a Linux CLI smoke check: live Mojang resolution of Minecraft 1.21.1
+  succeeded (97 libraries, Java 21 requirement), offline resolution reused the
+  cache without launcher network activity, instance creation succeeded, and
+  inspection correctly detected the runner's Java 17. This is not proof of a
+  Java 21 game launch.
+- Evidence: https://github.com/V4n0alt/veil-client/actions/runs/37837185485
+  (platform checks passed; formatting failed), and
+  https://github.com/V4n0alt/veil-client/actions/runs/37837642038
+  (all jobs green: formatted source, all three platforms, live CLI smoke).
+- Local Rust canonicalization and Git credential-helper execution remain blocked
+  by this Windows sandbox. Used the authorized GitHub connector for publication;
+  did not weaken local filesystem or security settings.
+
+### Next highest-priority step
+
+Verify an actual vanilla demo launch using Java 21 and a graphics-capable host,
+then an offline relaunch, corrupt-cache recovery and nonzero exit log capture.
+Track acceptance criteria in https://github.com/V4n0alt/veil-client/issues/2.
+Keep PR #1 in draft until that is demonstrated. Managed Java, Microsoft OAuth,
+loaders, UI, design reference, benchmarks and release signing remain outstanding.
+No Railway service is needed for this milestone.
+
+## 2026-10-06 — Initial local implementation (historical)
 
 ## Implemented
 
@@ -43,7 +84,7 @@
   No executable release, successful Minecraft launch, benchmark, remote commit,
   PR, deployment or release is claimed.
 
-## Current known issues / next priority
+## Known issues / next priority at the end of 2026-10-06
 
 1. On a host where Rust filesystem calls work, run `scripts/verify.ps1` (or the
    equivalent documented commands), fix any compiler/linter/test failures and
