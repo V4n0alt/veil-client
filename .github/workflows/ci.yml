@@ -1,0 +1,55 @@
+name: Rust CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: rust-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: rustup toolchain install 1.96.0 --profile minimal --component rustfmt
+      - name: Check formatting
+        id: format
+        run: cargo +1.96.0 fmt --all -- --check
+      - name: Save suggested formatting patch
+        if: failure() && steps.format.outcome == 'failure'
+        run: |
+          cargo +1.96.0 fmt --all
+          git diff --binary > formatting.patch
+      - name: Upload formatting patch
+        if: failure() && steps.format.outcome == 'failure'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: formatting-patch
+          path: formatting.patch
+          retention-days: 7
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: rustup toolchain install 1.96.0 --profile minimal --component rustfmt --component clippy
+      - name: Lint
+        run: cargo +1.96.0 clippy --workspace --all-targets --locked -- -D warnings
+      - name: Test
+        if: ${{ !cancelled() }}
+        run: cargo +1.96.0 test --workspace --locked
+      - name: Build
+        if: ${{ !cancelled() }}
+        run: cargo +1.96.0 build --workspace --locked
