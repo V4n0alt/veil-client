@@ -1,0 +1,92 @@
+name: Rust CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: rust-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: rustup toolchain install 1.96.0 --profile minimal --component rustfmt
+      - name: Check formatting
+        id: format
+        run: cargo +1.96.0 fmt --all -- --check
+      - name: Save suggested formatting patch
+        if: failure() && steps.format.outcome == 'failure'
+        run: |
+          cargo +1.96.0 fmt --all
+          git diff --binary > formatting.patch
+      - name: Upload formatting patch
+        if: failure() && steps.format.outcome == 'failure'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: formatting-patch
+          path: formatting.patch
+          retention-days: 7
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: rustup toolchain install 1.96.0 --profile minimal --component rustfmt --component clippy
+      - name: Lint
+        run: cargo +1.96.0 clippy --workspace --all-targets --locked -- -D warnings
+      - name: Test
+        if: ${{ !cancelled() }}
+        run: cargo +1.96.0 test --workspace --locked
+      - name: Build
+        if: ${{ !cancelled() }}
+        run: cargo +1.96.0 build --workspace --locked
+      - name: Verify live metadata and offline CLI reuse
+        if: success() && runner.os == 'Linux'
+        shell: bash
+        run: |
+          data_root="$RUNNER_TEMP/veil-smoke"
+          cargo +1.96.0 run --locked -p veil-cli -- resolve "$data_root" 1.21.1
+          cargo +1.96.0 run --locked -p veil-cli -- resolve "$data_root" 1.21.1 --offline
+          cargo +1.96.0 run --locked -p veil-cli -- init "$data_root" vanilla-demo 1.21.1
+          cargo +1.96.0 run --locked -p veil-cli -- java java
+      - name: Verify Windows Java classpath startup
+        if: success() && runner.os == 'Windows'
+        run: cargo +1.96.0 test --locked -p veil-core java_starts_from_canonical_windows_jar -- --ignored
+      - name: Build Windows development executable
+        if: success() && runner.os == 'Windows'
+        run: cargo +1.96.0 build --release --locked -p veil-cli
+      - name: Package Windows development test
+        if: success() && runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dev-bundle | Out-Null
+          Copy-Item target/release/veil.exe dev-bundle/veil.exe
+          Copy-Item scripts/START-DEMO.cmd dev-bundle/START-DEMO.cmd
+          Copy-Item scripts/FIRST-TEST.txt dev-bundle/FIRST-TEST.txt
+          Copy-Item LICENSE dev-bundle/LICENSE
+          $checksum = (Get-FileHash dev-bundle/veil.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$checksum  veil.exe" | Set-Content dev-bundle/SHA256SUMS.txt
+          "Source commit: ${{ github.event.pull_request.head.sha || github.sha }}" | Set-Content dev-bundle/BUILD.txt
+          "Built checkout: $(git rev-parse HEAD)" | Add-Content dev-bundle/BUILD.txt
+          ./dev-bundle/veil.exe --help
+      - name: Upload Windows development test
+        if: success() && runner.os == 'Windows'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: veil-windows-development
+          path: dev-bundle/
+          retention-days: 14

@@ -19,6 +19,10 @@ Principles:
 - Voxy is the far-view renderer; unsupported combinations must say
   "Voxy unavailable for this profile". Do not substitute other renderers.
 - No FPS or performance claims without recorded measurements.
+- New profiles default to Fresh: vanilla Minecraft with no preinstalled mods.
+  The future profile creator offers Fresh, Quality and Performance. Quality and
+  Performance are opt-in selections with their proposed contents shown first;
+  never silently add mods to Fresh profiles or existing profiles.
 - Do not create Railway infrastructure until a persistent backend is needed.
 
 Before committing: cargo fmt --all -- --check; cargo clippy --workspace

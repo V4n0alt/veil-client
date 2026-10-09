@@ -1,0 +1,25 @@
+VEIL CLIENT - FRESH VANILLA DEVELOPMENT TEST
+
+1. Extract the complete folder before starting.
+2. Double-click START-DEMO.cmd.
+3. Press a key when asked. Keep the terminal open during downloads/gameplay.
+4. Tell Codex whether the Minecraft title screen appears and a demo world opens.
+   If it fails, report the error shown in the terminal.
+
+This is a command-line development build, not the finished purple launcher UI.
+It runs Minecraft 1.21.1 in DEMO mode. Microsoft sign-in is not implemented yet.
+There are NO preinstalled mods, shaders, resource packs or optimization packs.
+
+The starter reuses Java 21 from the official Minecraft Launcher installation.
+It does not install Java system-wide. VEIL_JAVA can override the executable path.
+The first run downloads official game files; allow time and several GB of space.
+All Veil cache, logs and demo worlds stay in this folder's data subfolder.
+No existing .minecraft saves, mods or configuration are imported or changed.
+There is no telemetry or automatic log upload.
+
+Source: https://github.com/V4n0alt/veil-client/pull/1
+This executable is an unsigned development artifact, not a signed release.
+If Windows blocks it, stop and report the warning; do not disable protections.
+
+Future profiles will offer Fresh (default, no mods), Quality and Performance.
+Quality and Performance are optional; their contents will be shown before install.
