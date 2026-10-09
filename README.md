@@ -6,6 +6,9 @@ not a finished launcher or a verified playable release.**
 The Rust core is independent of the future native purple liquid-glass UI.
 There is no telemetry, advertising, Veil account, or backend dependency.
 Minecraft and third-party mods are not included or relicensed by this repository.
+New profiles are Fresh by default: vanilla with no preinstalled mods. The future
+profile creator will offer optional Quality and Performance choices, with their
+contents shown before installation.
 
 See [start here](CODEX_START_HERE.md), [security](SECURITY.md),
 [roadmap](docs/ROADMAP.md), and [session record](docs/SESSION_LOG.md).
@@ -23,6 +26,13 @@ cargo build --workspace --locked
 ```
 
 ## Initial command-line pipeline
+
+For a Windows development test without installing Rust, successful Windows CI
+jobs produce a `veil-windows-development` artifact. Extract the complete bundle
+and double-click `START-DEMO.cmd`; see `FIRST-TEST.txt` inside. The starter reuses
+Java 21 from the official Minecraft Launcher or a supplied `VEIL_JAVA` path. It
+creates an isolated Minecraft 1.21.1 demo profile with no mods. This is an unsigned
+development build, without Microsoft sign-in or the finished launcher UI.
 
 The implementation includes official version resolution, streamed SHA-1/size
 verification, cache reuse, isolated instances, Java major-version checks,
@@ -54,7 +64,9 @@ launches with `--demo`; it does not grant authenticated play or bypass ownership
 performs no launcher HTTP requests and requires the appropriate verified cache.
 Minecraft itself may still make network requests. The online version-list
 request refreshes the manifest; unchanged hash-verified artifacts are reused.
-Network domains/purposes are printed locally, including when preparation fails.
+Network progress prints sampled domains/purposes as requests start and a total
+request count, including when preparation fails. The core retains all request
+events in memory for the future activity UI.
 There is no persistent network activity page yet.
 
 Supported initial target: modern vanilla metadata, x86-64 Windows/Linux/macOS.

@@ -1,5 +1,17 @@
 # Session record
 
+## 2026-10-09 — Fresh profile development test bundle
+
+- Recorded the owner's profile requirement: Fresh is the default, with no mods.
+  Future Quality and Performance choices are opt-in and must preview contents.
+- Added sampled request progress so initial game downloads show activity.
+- Added a Windows release-mode CLI artifact with executable checksum, source
+  and checkout commit identifiers, first-test instructions and a double-click
+  starter. It reuses Minecraft Launcher's Java 21 and keeps its fresh demo
+  profile/cache/worlds in a separate data folder beside the executable.
+- These packaging changes still need their own CI validation. A graphics launch
+  remains unverified; this bundle is intended to make that manual check possible.
+
 ## 2026-10-08 — GitHub publication and build validation
 
 - The public GitHub repository now exists at

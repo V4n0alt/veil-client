@@ -61,6 +61,16 @@ fn run() -> Result<()> {
     let root = Path::new(&args[1]);
     let mut client = Downloader::new(root)?;
     // Print only domain/purpose; never headers, full URLs, or future account secrets.
+    let mut requests = 0_usize;
+    client.on_activity(move |event| {
+        requests += 1;
+        if requests <= 5 || requests.is_multiple_of(100) {
+            eprintln!(
+                "Network: {} — {} ({requests} requests started)",
+                event.domain, event.purpose
+            );
+        }
+    });
     let outcome = (|| -> Result<()> {
         match command {
             "versions" => {
@@ -102,6 +112,7 @@ fn run() -> Result<()> {
                 } else {
                     None
                 };
+                eprintln!("Preparing vanilla Minecraft: checking the cache and downloading missing files. The first run may take several minutes.");
                 let prepared =
                     launch::prepare(&mut client, &instance, &version, &platform, offline)?;
                 println!(
@@ -123,8 +134,8 @@ fn run() -> Result<()> {
         }
         Ok(())
     })();
-    for event in &client.activity {
-        eprintln!("Network: {} — {}", event.domain, event.purpose);
+    if !client.activity.is_empty() {
+        eprintln!("Network requests this run: {}", client.activity.len());
     }
     outcome
 }

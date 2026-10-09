@@ -82,10 +82,13 @@ pub struct NetworkEvent {
     pub required: bool,
 }
 
+type ActivityHandler = Box<dyn FnMut(&NetworkEvent) + Send>;
+
 pub struct Downloader {
     client: Client,
     root: PathBuf,
     pub activity: Vec<NetworkEvent>,
+    activity_handler: Option<ActivityHandler>,
 }
 
 impl Downloader {
@@ -100,18 +103,28 @@ impl Downloader {
                 .build()?,
             root: data_root(root)?,
             activity: Vec::new(),
+            activity_handler: None,
         })
+    }
+
+    /// Report request starts without exposing URLs, headers or credentials.
+    pub fn on_activity(&mut self, handler: impl FnMut(&NetworkEvent) + Send + 'static) {
+        self.activity_handler = Some(Box::new(handler));
     }
 
     fn get(&mut self, url: &str, purpose: &str) -> Result<reqwest::blocking::Response> {
         let url = validate_url(url)?;
-        self.activity.push(NetworkEvent {
+        let event = NetworkEvent {
             domain: url.host_str().unwrap_or_default().into(),
             purpose: purpose.into(),
             contacted_at_unix: SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs(),
             component: "minecraft-downloads",
             required: true,
-        });
+        };
+        if let Some(handler) = &mut self.activity_handler {
+            handler(&event);
+        }
+        self.activity.push(event);
         let response = self
             .client
             .get(url)

@@ -13,6 +13,12 @@
 6. GitHub releases, integrity/reproducibility, signing and installer; evaluate
    Railway only for optional update metadata that needs a persistent service.
 
+Product requirement (2026-10-08): the profile creator should offer Fresh,
+Quality and Performance. Fresh is the default and contains no mods. Quality
+and Performance are optional, with their proposed mod/configuration contents
+visible before installation. Each profile stays isolated. Existing profiles
+must never acquire mods just because a recommended preset changes.
+
 No mods or performance presets are installed by default at this stage. The
 7800X3D / RX 9070 XT / 32 GB target profile is a future benchmark target,
 not a measured or hard-coded optimization. The design reference is not supplied.
