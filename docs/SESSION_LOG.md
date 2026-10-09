@@ -9,8 +9,19 @@
   and checkout commit identifiers, first-test instructions and a double-click
   starter. It reuses Minecraft Launcher's Java 21 and keeps its fresh demo
   profile/cache/worlds in a separate data folder beside the executable.
-- These packaging changes still need their own CI validation. A graphics launch
-  remains unverified; this bundle is intended to make that manual check possible.
+- CI passed for source commit `0b01155561d0b559cbaa23159691a5835bc7f21b`:
+  https://github.com/V4n0alt/veil-client/actions/runs/37894262114.
+  Formatting, Clippy, tests and builds passed on all three platforms. The Windows
+  release executable was packaged successfully; Linux live/offline checks passed.
+- Retrieved artifact 11599846483 and verified its GitHub SHA-256 digest
+  `f7f4d653ec2d984e1594e745670f98b36ecee653b72bcaacff5cfaa7e171df24`.
+  Extracted only the six expected regular files, verified the executable against
+  its checksum file, and ran its help command successfully on the user's host.
+- The executable's Java inspection still hits this sandbox's canonicalization
+  denial (Windows error 5). Running the same Java directly reports Microsoft
+  OpenJDK 21.0.7. No security settings were changed. The next step is to run
+  START-DEMO.cmd from File Explorer, outside the agent sandbox, and report whether
+  the title screen and demo world open. No real graphics launch is claimed yet.
 
 ## 2026-10-08 — GitHub publication and build validation
 
