@@ -413,7 +413,10 @@ mod tests {
     fn converts_windows_java_paths_without_changing_unc_shares() {
         for (input, expected) in [
             (r"\\?\C:\Veil data\client.jar", r"C:\Veil data\client.jar"),
-            (r"\\?\UNC\server\share\client.jar", r"\\server\share\client.jar"),
+            (
+                r"\\?\UNC\server\share\client.jar",
+                r"\\server\share\client.jar",
+            ),
             (r"C:\Veil data\client.jar", r"C:\Veil data\client.jar"),
         ] {
             assert_eq!(java_argument_path(Path::new(input)).unwrap(), expected);

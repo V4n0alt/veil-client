@@ -13,7 +13,10 @@
   their canonical paths. Reject ambiguous trailing-dot/space and device paths.
 - Added path regression coverage and a Windows CI JDK integration check that
   compiles a tiny Java probe, packs a JAR and launches it through the actual plan.
-  The fixed build and real Minecraft graphics launch still need verification.
+  Windows CI passed that actual JDK startup check, plus 11 unit tests, Clippy and
+  the release build. Linux and macOS checks also passed in run 37933786028. The
+  run's formatting-only failure was corrected in the follow-up. A real Minecraft
+  graphics launch with the fixed executable still needs verification.
 
 ## 2026-10-09 — Fresh profile development test bundle
 
