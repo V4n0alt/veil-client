@@ -63,6 +63,9 @@ jobs:
           cargo +1.96.0 run --locked -p veil-cli -- resolve "$data_root" 1.21.1 --offline
           cargo +1.96.0 run --locked -p veil-cli -- init "$data_root" vanilla-demo 1.21.1
           cargo +1.96.0 run --locked -p veil-cli -- java java
+      - name: Verify Windows Java classpath startup
+        if: success() && runner.os == 'Windows'
+        run: cargo +1.96.0 test --locked -p veil-core java_starts_from_canonical_windows_jar -- --ignored
       - name: Build Windows development executable
         if: success() && runner.os == 'Windows'
         run: cargo +1.96.0 build --release --locked -p veil-cli

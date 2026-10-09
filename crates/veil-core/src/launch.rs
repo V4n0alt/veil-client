@@ -11,7 +11,7 @@ use serde::Serialize;
 use std::{
     collections::BTreeMap,
     fs::{self, File},
-    path::PathBuf,
+    path::{Path, PathBuf},
     process::{Command, Stdio},
 };
 
@@ -177,6 +177,35 @@ pub struct LaunchPlan {
     pub logs_directory: PathBuf,
 }
 
+// Rust's Windows canonical paths use verbatim prefixes that Java's class loader
+// cannot consume. Keep canonical paths for Rust I/O; convert only Java arguments.
+fn java_argument_path(path: &Path) -> Result<String> {
+    let value = path.to_str().context("non-Unicode Java path unsupported")?;
+    #[cfg(windows)]
+    {
+        use std::path::{Component, Prefix};
+        for component in path.components() {
+            if let Component::Normal(part) = component {
+                ensure!(
+                    !part.to_str().unwrap_or_default().ends_with(['.', ' ']),
+                    "Java paths cannot contain components ending in a dot or space"
+                );
+            }
+        }
+        if let Some(Component::Prefix(prefix)) = path.components().next() {
+            match prefix.kind() {
+                Prefix::VerbatimDisk(_) => return Ok(value[4..].into()),
+                Prefix::VerbatimUNC(_, _) => return Ok(format!(r"\\{}", &value[8..])),
+                Prefix::Verbatim(_) | Prefix::DeviceNS(_) => {
+                    anyhow::bail!("unsupported Windows device path for Java")
+                }
+                _ => {}
+            }
+        }
+    }
+    Ok(value.into())
+}
+
 pub fn demo_plan(
     instance: &Instance,
     version: &Version,
@@ -225,15 +254,15 @@ pub fn demo_plan(
         ("assets_root", &prepared.assets_root),
         ("natives_directory", &instance.path.join("natives")),
     ] {
-        variables.insert(
-            key.into(),
-            path.to_str()
-                .context("non-Unicode data path unsupported")?
-                .into(),
-        );
+        variables.insert(key.into(), java_argument_path(path)?);
     }
     ensure!(!prepared.classpath.is_empty(), "empty Minecraft classpath");
-    let classpath = std::env::join_paths(&prepared.classpath).context("invalid classpath entry")?;
+    let java_classpath = prepared
+        .classpath
+        .iter()
+        .map(|path| java_argument_path(path))
+        .collect::<Result<Vec<_>>>()?;
+    let classpath = std::env::join_paths(&java_classpath).context("invalid classpath entry")?;
     variables.insert(
         "classpath".into(),
         classpath
@@ -247,10 +276,7 @@ pub fn demo_plan(
             .logging
             .as_ref()
             .context("logging configuration was not prepared")?;
-        let values = BTreeMap::from([(
-            "path".into(),
-            path.to_str().context("invalid logging path")?.into(),
-        )]);
+        let values = BTreeMap::from([("path".into(), java_argument_path(path)?)]);
         arguments.push(substitute(&logging.client.argument, &values)?);
     }
     arguments.push(version.main_class.clone());
@@ -369,7 +395,7 @@ mod tests {
                 .unwrap();
             assert_eq!(
                 plan.arguments[position + 1],
-                instance.path.join("game").to_str().unwrap()
+                java_argument_path(&instance.path.join("game")).unwrap()
             );
             assert!(plan
                 .arguments
@@ -380,5 +406,76 @@ mod tests {
                 os == "osx"
             );
         }
+    }
+
+    #[cfg(windows)]
+    #[test]
+    fn converts_windows_java_paths_without_changing_unc_shares() {
+        for (input, expected) in [
+            (r"\\?\C:\Veil data\client.jar", r"C:\Veil data\client.jar"),
+            (r"\\?\UNC\server\share\client.jar", r"\\server\share\client.jar"),
+            (r"C:\Veil data\client.jar", r"C:\Veil data\client.jar"),
+        ] {
+            assert_eq!(java_argument_path(Path::new(input)).unwrap(), expected);
+        }
+        assert!(java_argument_path(Path::new(r"\\.\PhysicalDrive0")).is_err());
+        assert!(java_argument_path(Path::new(r"\\?\C:\ambiguous.\client.jar")).is_err());
+    }
+
+    #[cfg(windows)]
+    #[test]
+    #[ignore = "requires java, javac and jar on PATH; run explicitly in Windows CI"]
+    fn java_starts_from_canonical_windows_jar() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut instance =
+            Instance::create(&dir.path().join("data with spaces"), "probe", "1.21.1").unwrap();
+        instance.config.memory_mib = 512;
+        let source = dir.path().join("VeilClasspathProbe.java");
+        fs::write(
+            &source,
+            "public class VeilClasspathProbe { public static void main(String[] args) { System.out.print(\"veil-java-classpath-ok\"); } }",
+        )
+        .unwrap();
+        let compiled = Command::new("javac").arg(&source).output().unwrap();
+        assert!(compiled.status.success(), "{:?}", compiled);
+        let jar_path = dir.path().join("probe.jar");
+        let packed = Command::new("jar")
+            .arg("--create")
+            .arg("--file")
+            .arg(&jar_path)
+            .arg("-C")
+            .arg(dir.path())
+            .arg("VeilClasspathProbe.class")
+            .output()
+            .unwrap();
+        assert!(packed.status.success(), "{:?}", packed);
+        let runtime = java::inspect(Path::new("java")).unwrap();
+        let mut version: Version =
+            serde_json::from_str(include_str!("../tests/fixtures/1.21.1.json")).unwrap();
+        version.main_class = "VeilClasspathProbe".into();
+        version.java_version.as_mut().unwrap().major = runtime.major;
+        let prepared = PreparedGame {
+            classpath: vec![jar_path.canonicalize().unwrap()],
+            assets_root: instance.root.join("assets"),
+            logging: Some(instance.root.join("logging.xml")),
+        };
+        let plan = demo_plan(
+            &instance,
+            &version,
+            &prepared,
+            &runtime,
+            &Platform::current().unwrap(),
+        )
+        .unwrap();
+        assert!(!plan.arguments.iter().any(|arg| arg.contains(r"\\?\")));
+        assert!(plan.run().unwrap().success);
+        let log = fs::read_dir(&plan.logs_directory)
+            .unwrap()
+            .next()
+            .unwrap()
+            .unwrap()
+            .path()
+            .join("stdout.log");
+        assert_eq!(fs::read_to_string(log).unwrap(), "veil-java-classpath-ok");
     }
 }

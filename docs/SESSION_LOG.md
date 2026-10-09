@@ -1,5 +1,20 @@
 # Session record
 
+## 2026-10-09 — Windows Java classpath startup fix
+
+- The owner ran the fresh starter: Java 21 was detected, the isolated instance
+  was created, and all game files were verified after 3,963 network requests.
+  Minecraft then exited with ClassNotFoundException for its main class.
+- Reproduced against the downloaded client JAR: Java cannot find Main with a
+  Windows verbatim `\\?\` classpath, but loads Main with the standard drive path
+  (then reports an expected missing dependency in the single-JAR diagnostic).
+- Convert canonical drive/UNC paths only at the Java argument boundary, including
+  classpath, assets, game, natives and logging paths. Rust filesystem checks retain
+  their canonical paths. Reject ambiguous trailing-dot/space and device paths.
+- Added path regression coverage and a Windows CI JDK integration check that
+  compiles a tiny Java probe, packs a JAR and launches it through the actual plan.
+  The fixed build and real Minecraft graphics launch still need verification.
+
 ## 2026-10-09 — Fresh profile development test bundle
 
 - Recorded the owner's profile requirement: Fresh is the default, with no mods.
