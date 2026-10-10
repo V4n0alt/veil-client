@@ -6,7 +6,10 @@ launcher, not a replacement launcher or Minecraft mod.
 
 ## Open the ready-made preview
 
-Extract the preview ZIP and open `index.html` in a current desktop browser.
+Open **Veil-Preview.html** in Edge, Chrome or Firefox. This single file embeds
+the app, background, font and any imported item textures; no ZIP extraction or
+neighboring files are needed. The folder-based `index.html` remains available
+for developers and requires its adjacent files.
 Everything is local, including the background image, icons and Inter font.
 No development server, account, Node installation or network connection is needed
 to use that built preview. Browser/file access can be restricted by managed tools;

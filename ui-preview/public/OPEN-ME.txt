@@ -1,6 +1,7 @@
 VEIL CLIENT — INTERACTIVE UI PREVIEW
 
-Open index.html in your browser. Keep this folder's files together.
+Open Veil-Preview.html in Edge, Chrome or Firefox. It is self-contained.
+The developer index.html still needs all neighboring files.
 No installation or development server is required.
 
 Use the top bar to switch between Main menu, Inventory, Features, HUD, Settings

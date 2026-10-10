@@ -1,4 +1,5 @@
 import { useState, useId } from "react";
+import { textureUrl } from "../assets";
 export type Item = { kind: string; count?: number };
 const colors: Record<string, string> = {
   sword: "#72e5d0",
@@ -117,7 +118,7 @@ function TexturedItem({ kind }: { kind: string }) {
           </filter>
         </defs>
         <image
-          href={`./minecraft/${block.top}.png`}
+          href={textureUrl(block.top)}
           width="16"
           height="16"
           transform="matrix(0.875 -0.4375 0.875 0.4375 2 9)"
@@ -125,14 +126,14 @@ function TexturedItem({ kind }: { kind: string }) {
           onError={() => setMissing(true)}
         />
         <image
-          href={`./minecraft/${block.side}.png`}
+          href={textureUrl(block.side)}
           width="16"
           height="16"
           transform="matrix(0.875 0.4375 0 0.875 2 9)"
           onError={() => setMissing(true)}
         />
         <image
-          href={`./minecraft/${block.side}.png`}
+          href={textureUrl(block.side)}
           width="16"
           height="16"
           transform="matrix(0.875 -0.4375 0 0.875 16 16)"
@@ -149,14 +150,14 @@ function TexturedItem({ kind }: { kind: string }) {
       {kind === "potion" && (
         <img
           className="potion-fill"
-          src="./minecraft/potion_overlay.png"
+          src={textureUrl("potion_overlay")}
           alt=""
           draggable={false}
           onError={() => setMissing(true)}
         />
       )}
       <img
-        src={`./minecraft/${texture}.png`}
+        src={textureUrl(texture)}
         alt=""
         draggable={false}
         onError={() => setMissing(true)}

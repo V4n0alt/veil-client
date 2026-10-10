@@ -17,8 +17,36 @@ window.fetch = () => {
   requests++;
   throw new Error("Unexpected network request");
 };
-window.document.body.innerHTML = '<div id="root"></div>';
-window.eval(await readFile("dist/app.js", "utf8"));
+if (process.argv.includes("--standalone")) {
+  const html = await readFile("dist/Veil-Preview.html", "utf8");
+  const parsed = new window.DOMParser().parseFromString(html, "text/html");
+  assert.equal(
+    parsed.querySelectorAll(
+      "script[src], link[href]:not([href^='data:']), img[src]:not([src^='data:'])",
+    ).length,
+    0,
+    "standalone must not need neighboring files",
+  );
+  assert.ok(
+    parsed
+      .querySelector("style")
+      .textContent.includes("data:image/png;base64,"),
+  );
+  assert.ok(
+    parsed
+      .querySelector("style")
+      .textContent.includes("data:font/woff2;base64,"),
+  );
+  window.document.body.innerHTML = parsed.body.innerHTML;
+  for (const script of parsed.querySelectorAll("script"))
+    window.eval(script.textContent);
+  console.log(
+    "PASS: isolated single-file startup with embedded artwork and font",
+  );
+} else {
+  window.document.body.innerHTML = '<div id="root"></div>';
+  window.eval(await readFile("dist/app.js", "utf8"));
+}
 const settle = () => new Promise((resolve) => setTimeout(resolve, 20));
 const doc = window.document;
 const byText = (selector, text) =>
@@ -171,6 +199,21 @@ try {
   console.log(
     "PASS: privacy defaults, shared profiles, preview boundary and zero app fetches",
   );
+  if (process.argv.includes("--standalone")) {
+    window.dispatchEvent(
+      new window.CustomEvent("veil-startup-error", {
+        detail: "Startup diagnostic test",
+      }),
+    );
+    assert.match(doc.querySelector("#root").textContent, /Veil couldn't open/);
+    assert.match(
+      doc.querySelector("#root pre").textContent,
+      /Startup diagnostic test/,
+    );
+    console.log(
+      "PASS: startup failures show an actionable message instead of a blank page",
+    );
+  }
 } finally {
   await window.happyDOM.close();
 }

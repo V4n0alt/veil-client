@@ -174,3 +174,14 @@ Railway was intentionally not provisioned: Phase 1 needs no persistent backend.
   prototype, with no gameplay, shader or account integration.
 - TypeScript, production bundling and interaction checks passed after changes.
   Browser visual review remains pending.
+
+## 2026-10-10 — Blank preview startup report
+
+The user reported a blank page in the updated preview. The exact browser-side
+cause is not yet confirmed. The existing index.html depended on adjacent JS/CSS
+files and had no visible state if JavaScript failed to load. Added a self-contained
+Veil-Preview.html build embedding code, CSS, background, font and locally imported
+textures, plus visible startup diagnostics and React fatal-error reporting.
+Both ordinary bundle and standalone HTML now run the interaction suite. The
+standalone check verifies embedded assets and startup error presentation. These
+are DOM checks; browser rendering remains unverified in this environment.
