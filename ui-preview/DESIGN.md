@@ -47,3 +47,22 @@ Browser screenshot review was blocked in this agent environment: the local
 HTTP preview timed out and the browser tool prohibits file URLs. No browser
 visual pass is claimed. The self-contained build is provided for manual review
 at desktop and narrow widths, including focus visibility and pointer dragging.
+
+## Supplied video reference
+
+Reviewed twelve frames across the user's 56-second video. Relevant visual cues:
+compact lavender-bordered translucent windows, tight controls, vanilla grey
+inventory with square beveled slots, and normal Minecraft item silhouettes.
+The updated preview uses those cues. The decorative scene remains the original
+Veil artwork; no video gameplay effects or automatic shader installation are
+implemented. The video itself is not copied into the application or repository.
+
+The local build includes 20 unchanged texture PNGs from the SHA-1-verified
+Minecraft 1.21.1 client already on this computer. Source builds fall back to the
+original SVG artwork unless textures are imported locally. The item renderer
+uses crisp nearest-neighbor scaling, three projected faces for block icons, and
+a tinted potion overlay. Slots, hotbar and item names are now closer to vanilla.
+
+After this refinement, TypeScript, production build and existing interaction
+checks passed. Browser visual review is still pending; extracted video frames
+were inspected, but they do not validate the application's rendered layout.

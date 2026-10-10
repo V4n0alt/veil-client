@@ -68,3 +68,27 @@ See `DESIGN.md` for the saved prompt and design decisions. The split-V logo and
 pixel item artwork were authored in SVG/CSS for this prototype. Runtime dependency
 and font licenses are included in `public/THIRD-PARTY-NOTICES.txt` and copied into
 the standalone build. Veil source remains under the repository MIT license.
+
+## Video reference refinement
+
+The supplied clip uses compact translucent control panels with lavender outlines,
+classic square inventory slots, and Minecraft's normal item textures. The preview
+now uses that combination while retaining Veil's main menu and sunset artwork.
+It does not recreate gameplay effects or add any mods.
+
+For this computer's ready-made preview, 20 original PNG textures were imported
+from the verified local Minecraft 1.21.1 client. They cover every displayed item,
+armor piece and block. Block icons use three textured faces; item images keep
+nearest-neighbor pixels. Names now use the familiar full Minecraft item names.
+
+The game textures remain local and are excluded from Git and the repository's
+MIT license. Source-only builds and GitHub CI artifacts use the original SVG
+fallbacks unless you import your own cached client before building:
+
+```powershell
+./scripts/import-minecraft-textures.ps1 -ClientJar 'C:/path/to/1.21.1-client.jar'
+npm run build
+```
+
+This reads only the exact official 1.21.1 JAR and a fixed list of texture entries.
+It makes no network requests and does not change Minecraft or install mods.

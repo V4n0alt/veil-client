@@ -1,3 +1,4 @@
+import { useState, useId } from "react";
 export type Item = { kind: string; count?: number };
 const colors: Record<string, string> = {
   sword: "#72e5d0",
@@ -18,7 +19,7 @@ const colors: Record<string, string> = {
   legs: "#bed1df",
   boots: "#bed1df",
 };
-export function ItemIcon({ kind }: { kind: string }) {
+function PlaceholderIcon({ kind }: { kind: string }) {
   let path = "M5 4h14v16H5z";
   if (kind === "sword")
     path =
@@ -48,6 +49,119 @@ export function ItemIcon({ kind }: { kind: string }) {
       <path d="M8 6h5v2H8zm-2 6h3v3H6z" fill="#ffffff55" />
       {kind === "grass" && <path d="M5 4h14v6H5z" fill="#8abf62" />}
     </svg>
+  );
+}
+const textureNames: Record<string, string> = {
+  sword: "diamond_sword",
+  pickaxe: "diamond_pickaxe",
+  diamond: "diamond",
+  apple: "apple",
+  pearl: "ender_pearl",
+  potion: "potion",
+  bread: "bread",
+  map: "map",
+  helmet: "diamond_helmet",
+  chest: "diamond_chestplate",
+  legs: "diamond_leggings",
+  boots: "diamond_boots",
+  torch: "torch",
+};
+export const itemNames: Record<string, string> = {
+  sword: "Diamond Sword",
+  pickaxe: "Diamond Pickaxe",
+  diamond: "Diamond",
+  grass: "Grass Block",
+  stone: "Stone",
+  log: "Oak Log",
+  planks: "Oak Planks",
+  apple: "Apple",
+  pearl: "Ender Pearl",
+  potion: "Potion",
+  bread: "Bread",
+  map: "Map",
+  helmet: "Diamond Helmet",
+  chest: "Diamond Chestplate",
+  legs: "Diamond Leggings",
+  boots: "Diamond Boots",
+  torch: "Torch",
+};
+const blockNames: Record<string, { top: string; side: string }> = {
+  grass: { top: "grass_block_top", side: "grass_block_side" },
+  stone: { top: "stone", side: "stone" },
+  log: { top: "oak_log_top", side: "oak_log" },
+  planks: { top: "oak_planks", side: "oak_planks" },
+};
+// Textures are imported from the user's local Minecraft installation. No downloads.
+// Source-only previews retain original SVG placeholders when assets are absent.
+export function ItemIcon({ kind }: { kind: string }) {
+  return <TexturedItem key={kind} kind={kind} />;
+}
+function TexturedItem({ kind }: { kind: string }) {
+  const [missing, setMissing] = useState(false);
+  const filterId = useId();
+  if (missing) return <PlaceholderIcon kind={kind} />;
+  const block = blockNames[kind];
+  if (block)
+    return (
+      <svg
+        className="item-icon textured-block"
+        viewBox="0 0 32 32"
+        aria-hidden="true"
+      >
+        <defs>
+          <filter id={filterId} colorInterpolationFilters="sRGB">
+            <feColorMatrix
+              type="matrix"
+              values="0.49 0 0 0 0  0 0.74 0 0 0  0 0 0.31 0 0  0 0 0 1 0"
+            />
+          </filter>
+        </defs>
+        <image
+          href={`./minecraft/${block.top}.png`}
+          width="16"
+          height="16"
+          transform="matrix(0.875 -0.4375 0.875 0.4375 2 9)"
+          filter={kind === "grass" ? `url(#${filterId})` : undefined}
+          onError={() => setMissing(true)}
+        />
+        <image
+          href={`./minecraft/${block.side}.png`}
+          width="16"
+          height="16"
+          transform="matrix(0.875 0.4375 0 0.875 2 9)"
+          onError={() => setMissing(true)}
+        />
+        <image
+          href={`./minecraft/${block.side}.png`}
+          width="16"
+          height="16"
+          transform="matrix(0.875 -0.4375 0 0.875 16 16)"
+          onError={() => setMissing(true)}
+        />
+        <path d="M2 9L16 16V30L2 23Z" fill="#000" opacity=".12" />
+        <path d="M16 16L30 9V23L16 30Z" fill="#000" opacity=".28" />
+      </svg>
+    );
+  const texture = textureNames[kind];
+  if (!texture) return <PlaceholderIcon kind={kind} />;
+  return (
+    <span className={`item-icon textured-item item-${kind}`} aria-hidden="true">
+      {kind === "potion" && (
+        <img
+          className="potion-fill"
+          src="./minecraft/potion_overlay.png"
+          alt=""
+          draggable={false}
+          onError={() => setMissing(true)}
+        />
+      )}
+      <img
+        src={`./minecraft/${texture}.png`}
+        alt=""
+        draggable={false}
+        onError={() => setMissing(true)}
+      />
+    </span>
   );
 }
 export const starterItems: (Item | null)[] = [
@@ -85,10 +199,10 @@ export function Slot({
       className={`slot ${selected ? "selected" : ""}`}
       onClick={onClick}
       disabled={disabled}
-      aria-label={`${index !== undefined ? `Slot ${index + 1}: ` : ""}${item ? `${item.kind}${item.count ? `, ${item.count}` : ""}` : "empty"}`}
+      aria-label={`${index !== undefined ? `Slot ${index + 1}: ` : ""}${item ? `${itemNames[item.kind] || item.kind}${item.count ? `, ${item.count}` : ""}` : "empty"}`}
       title={
         item
-          ? `${item.kind[0].toUpperCase() + item.kind.slice(1)}${item.count ? ` × ${item.count}` : ""}`
+          ? `${itemNames[item.kind] || item.kind}${item.count ? ` × ${item.count}` : ""}`
           : "Empty slot"
       }
     >

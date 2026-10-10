@@ -14,7 +14,7 @@ import {
   FlaskConical,
 } from "lucide-react";
 import { Button, Badge } from "../components/ui";
-import { ItemIcon, Slot, starterItems } from "../components/Items";
+import { ItemIcon, Slot, starterItems, itemNames } from "../components/Items";
 import { useVeil } from "../state";
 function Widget({
   label,
@@ -226,7 +226,9 @@ export function Hud() {
           <i />
         </div>
         <div className="hud-bottom">
-          <p className="selected-item-name">{starterItems[slot]?.kind}</p>
+          <p className="selected-item-name">
+            {itemNames[starterItems[slot]?.kind || ""]}
+          </p>
           <div className="vitals">
             <div>
               {Array.from({ length: 10 }, (_, i) => (

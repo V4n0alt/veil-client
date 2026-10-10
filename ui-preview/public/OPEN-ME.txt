@@ -14,3 +14,9 @@ Changes reset when you reload the page.
 
 To test the actual vanilla Minecraft demo, use START-DEMO.cmd in the separate
 veil-demo folder. The Java classpath fix has been installed in that bundle.
+
+VIDEO REFERENCE UPDATE
+The local preview now includes normal Minecraft textures imported from this
+computer's existing game cache, classic square inventory slots, and more compact
+purple glass panels. No mods or resource packs were installed. Texture ownership
+and origin are documented in minecraft/SOURCE.txt.

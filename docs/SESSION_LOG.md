@@ -161,3 +161,16 @@ No Railway service is needed for this milestone.
    performance preset is represented as implemented.
 
 Railway was intentionally not provisioned: Phase 1 needs no persistent backend.
+
+## 2026-10-10 — Reference video and normal inventory items
+
+- Inspected the supplied 56-second reference clip and used its compact glass
+  panels, thin purple borders and vanilla inventory styling.
+- Added a fixed-list importer for the verified local Minecraft 1.21.1 client.
+  Imported textures stay Git-ignored and carry a separate source notice.
+- Replaced local placeholder icons with game textures, textured block faces,
+  diamond armor, full item names, square slots and a classic hotbar.
+- Fresh profile defaults and no-mod behavior remain intact. This is still a UI
+  prototype, with no gameplay, shader or account integration.
+- TypeScript, production bundling and interaction checks passed after changes.
+  Browser visual review remains pending.

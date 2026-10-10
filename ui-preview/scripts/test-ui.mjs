@@ -87,14 +87,14 @@ try {
   console.log("PASS: feature toggles, search, empty state and settings dialog");
 
   await screen("Inventory");
-  await click(labelled("Slot 1: sword"));
+  await click(labelled("Slot 1: Diamond Sword"));
   await click(labelled("Slot 10: empty"));
-  assert.ok(labelled("Slot 10: sword"));
+  assert.ok(labelled("Slot 10: Diamond Sword"));
   assert.ok(labelled("Slot 1: empty"));
-  await click(labelled("planks, 4"));
-  assert.ok(labelled("Slot 1: planks, 4"));
+  await click(labelled("Oak Planks, 4"));
+  assert.ok(labelled("Slot 1: Oak Planks, 4"));
   await click(byText(".inventory-panel footer button", "Reset"));
-  assert.ok(labelled("Slot 1: sword"));
+  assert.ok(labelled("Slot 1: Diamond Sword"));
   console.log("PASS: inventory moves, crafting sample and reset");
 
   await screen("Settings");

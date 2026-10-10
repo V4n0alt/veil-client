@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { X, ArrowRight, RotateCcw, Shield, Leaf, Sun } from "lucide-react";
 import { useVeil } from "../state";
-import { Slot, ItemIcon, starterItems, type Item } from "../components/Items";
+import {
+  Slot,
+  ItemIcon,
+  starterItems,
+  itemNames,
+  type Item,
+} from "../components/Items";
 import { Badge, IconButton, Button } from "../components/ui";
 export function Inventory() {
   const { navigate, notify } = useVeil();
@@ -25,7 +31,7 @@ export function Inventory() {
       <div className="inventory-heading">
         <span className="eyebrow">EVERYTHING IN ITS PLACE</span>
         <h1>Ready for the next chapter.</h1>
-        <p>A familiar inventory. A softer touch.</p>
+        <p>Classic items. Your familiar inventory.</p>
       </div>
       <div className="inventory-layout">
         <div className="inventory-panel glass">
@@ -173,7 +179,9 @@ export function Inventory() {
             </div>
             <Badge>{selected === null ? "Equipment" : "Selected item"}</Badge>
             <h3>
-              {selected === null ? "Diamond sword" : items[selected]?.kind}
+              {selected === null
+                ? "Diamond Sword"
+                : itemNames[items[selected]?.kind || "sword"]}
             </h3>
             <p>
               {selected === null

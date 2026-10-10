@@ -1,3 +1,6 @@
 node_modules/
 dist/
 *.tsbuildinfo
+
+# Imported from the local game; do not publish game textures.
+public/minecraft/

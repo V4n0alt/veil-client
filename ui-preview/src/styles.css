@@ -3065,3 +3065,193 @@ kbd {
     font-size: 27px;
   }
 }
+/* Reference clip refinement: compact lavender glass and familiar game slots. */
+.window-shell {
+  max-width: 1130px;
+  background: rgba(27, 25, 35, 0.77);
+  border: 1px solid #bea1ff8c;
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 4px #100e1680,
+    0 0 22px #9b6bff26,
+    0 26px 70px #0007;
+}
+.window-shell .sidebar {
+  background: #1916205e;
+}
+.window-toolbar {
+  background: #16131e45;
+}
+.module-card {
+  min-height: 168px;
+  border-radius: 10px;
+  border-color: #bda4f55c;
+  background: #22202b70;
+  padding: 14px 14px 7px;
+}
+.module-top {
+  margin-bottom: 10px;
+}
+.module-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+}
+.module-icon svg {
+  width: 18px;
+  height: 18px;
+}
+.module-card.enabled {
+  background: #4c3b6566;
+  border-color: #c3a5ffb3;
+}
+.window-shell .section-heading h1 {
+  font-size: 22px;
+}
+.reduced-blur .window-shell {
+  background: #211d2b;
+}
+.high-contrast .window-shell {
+  background: #121016;
+  border-color: #e0ceff;
+}
+
+.textured-item {
+  position: relative;
+  display: inline-block;
+  aspect-ratio: 1;
+}
+.textured-item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+.textured-item .potion-fill {
+  position: absolute;
+  inset: 0;
+  filter: sepia(1) saturate(3) hue-rotate(210deg);
+}
+.textured-block {
+  image-rendering: pixelated;
+  overflow: visible;
+}
+.textured-block image {
+  image-rendering: pixelated;
+}
+.slot .item-icon {
+  max-width: 40px;
+  filter: drop-shadow(2px 2px 0 #0005);
+}
+.inventory-panel {
+  background: #c6c6c6;
+  color: #222;
+  border-radius: 5px;
+  border: 3px solid;
+  border-color: #f6f6f6 #555 #555 #f6f6f6;
+  box-shadow:
+    0 0 0 2px #17151b,
+    0 20px 65px #0008;
+  backdrop-filter: none;
+}
+.inventory-panel h2,
+.inventory-panel .eyebrow {
+  color: #303030;
+}
+.inventory-panel header span,
+.inventory-divider,
+.inventory-panel footer > span,
+.inventory-panel .crafting small,
+.inventory-panel .crafting-row {
+  color: #414141;
+}
+.inventory-panel .icon-button,
+.inventory-panel footer .button {
+  color: #393039;
+}
+.inventory-panel .icon-button:hover,
+.inventory-panel footer .button:hover {
+  background: #b4a7c6;
+}
+.inventory-panel > header,
+.inventory-hotbar {
+  border-color: #7776;
+}
+.inventory-panel .character-stage {
+  background: #242424;
+  border: 2px inset #eee;
+  border-radius: 0;
+}
+.inventory-panel .character-stage .badge {
+  margin-bottom: 8px;
+}
+.slot,
+.armor-slots .slot,
+.hud-hotbar .slot {
+  border-radius: 0;
+  border: 2px solid;
+  border-color: #373737 #eeeeee #eeeeee #373737;
+  background: #8b8b8b;
+  box-shadow: none;
+  padding: 5px;
+}
+.slot:hover {
+  background: #b6b6b6;
+}
+.slot.selected {
+  background: #ad9bbc;
+  outline: 2px solid #e0caff;
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 2px #6e548d;
+}
+.slot:focus-visible {
+  outline: 3px solid #6b39b5;
+  outline-offset: 1px;
+}
+.slot:disabled {
+  opacity: 1;
+}
+.slot-grid {
+  gap: 2px;
+}
+.item-count {
+  color: white;
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+  right: 3px;
+  bottom: 2px;
+  text-shadow: 2px 2px #292929;
+}
+.hud-hotbar {
+  gap: 1px;
+  padding: 3px;
+  border-radius: 2px;
+  border: 2px solid #aaa;
+  background: #303030b3;
+}
+.hud-hotbar .slot {
+  background: #565656a6;
+  border-color: #252525 #8a8a8a #8a8a8a #252525;
+}
+.hud-hotbar .slot.selected {
+  outline: 2px solid #ece5f7;
+  background: #87749660;
+}
+.hud-hotbar .slot .item-icon {
+  max-width: 32px;
+}
+@media (max-width: 600px) {
+  .item-count {
+    font-size: 10px;
+    right: 1px;
+    bottom: 1px;
+  }
+  .slot,
+  .armor-slots .slot,
+  .hud-hotbar .slot {
+    padding: 3px;
+    border-width: 1px;
+  }
+}
