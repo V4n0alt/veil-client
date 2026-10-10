@@ -1,5 +1,26 @@
 # Session record
 
+## 2026-10-10 — UI system and interactive mockup
+
+- Built the owner's new UI brief in a separate React/TypeScript prototype with
+  shared purple/charcoal tokens, local Inter font, reusable controls, original
+  sunset artwork and six screens. No launcher architecture was replaced.
+- Implemented preview profile creation (Fresh default, no mods), optional preset
+  disclosure, module search/toggles, inventory movement/crafting, settings,
+  accessibility preferences and movable/toggleable HUD widgets. Game readings
+  and features are labeled samples; no game, account or mod integration is claimed.
+- TypeScript and production build passed locally. DOM interaction checks cover
+  the flows above, privacy defaults and no app fetches. Browser visual review
+  remains pending because local preview HTTP timed out and browser file URLs are
+  blocked. A standalone local bundle is provided for manual review.
+- Added a pinned GitHub Actions UI workflow for formatting, type/build checks,
+  interaction tests and a downloadable standalone artifact.
+- Also completed the previous launcher handoff: run 37979946859 passed all Rust
+  checks including Windows Java startup. Downloaded artifact 11641066472,
+  verified its SHA-256 and executable checksum, and updated the user's veil-demo
+  bundle to source 748f3e6. Preserved the old executable and all profile/cache data.
+  The owner still needs to verify the real Minecraft title screen with this fix.
+
 ## 2026-10-09 — Windows Java classpath startup fix
 
 - The owner ran the fresh starter: Java 21 was detected, the isolated instance

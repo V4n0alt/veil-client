@@ -1,0 +1,67 @@
+@font-face {
+  font-family: Inter;
+  src: url("./inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+:root {
+  --bg-main: #0b0b10;
+  --bg-soft: #14141c;
+  --panel: #1b1b26;
+  --panel-overlay: rgba(20, 20, 28, 0.72);
+  --border-soft: rgba(180, 140, 255, 0.25);
+  --accent: #9b6bff;
+  --accent-bright: #b68cff;
+  --accent-soft: #cbb5ff;
+  --accent-pink: #e1a7ff;
+  --text-main: #f5f5fa;
+  --text-secondary: #b9b9c9;
+  --text-muted: #8c8ca0;
+  --success: #6ee7b7;
+  --warning: #fbbf24;
+  --danger: #fb7185;
+  --info: #60a5fa;
+  --radius-control: 12px;
+  --radius-card: 18px;
+  --radius-panel: 24px;
+  --blur: 18px;
+  --duration-hover: 150ms;
+  --duration-panel: 250ms;
+  --duration-page: 300ms;
+  --shadow: 0 8px 32px #00000059;
+  --font: Inter, "Segoe UI", sans-serif;
+}
+/* These utilities animate composited properties only; no ambient animation loop. */
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.enter {
+  animation: enter var(--duration-page) ease-out both;
+}
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+.reduced-blur {
+  --blur: 0px;
+  --panel-overlay: rgba(20, 20, 28, 0.96);
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
