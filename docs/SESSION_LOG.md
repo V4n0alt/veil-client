@@ -1,5 +1,26 @@
 # Session record
 
+## 2026-10-10 — UI system and interactive mockup
+
+- Built the owner's new UI brief in a separate React/TypeScript prototype with
+  shared purple/charcoal tokens, local Inter font, reusable controls, original
+  sunset artwork and six screens. No launcher architecture was replaced.
+- Implemented preview profile creation (Fresh default, no mods), optional preset
+  disclosure, module search/toggles, inventory movement/crafting, settings,
+  accessibility preferences and movable/toggleable HUD widgets. Game readings
+  and features are labeled samples; no game, account or mod integration is claimed.
+- TypeScript and production build passed locally. DOM interaction checks cover
+  the flows above, privacy defaults and no app fetches. Browser visual review
+  remains pending because local preview HTTP timed out and browser file URLs are
+  blocked. A standalone local bundle is provided for manual review.
+- Added a pinned GitHub Actions UI workflow for formatting, type/build checks,
+  interaction tests and a downloadable standalone artifact.
+- Also completed the previous launcher handoff: run 37979946859 passed all Rust
+  checks including Windows Java startup. Downloaded artifact 11641066472,
+  verified its SHA-256 and executable checksum, and updated the user's veil-demo
+  bundle to source 748f3e6. Preserved the old executable and all profile/cache data.
+  The owner still needs to verify the real Minecraft title screen with this fix.
+
 ## 2026-10-09 — Windows Java classpath startup fix
 
 - The owner ran the fresh starter: Java 21 was detected, the isolated instance
@@ -140,3 +161,27 @@ No Railway service is needed for this milestone.
    performance preset is represented as implemented.
 
 Railway was intentionally not provisioned: Phase 1 needs no persistent backend.
+
+## 2026-10-10 — Reference video and normal inventory items
+
+- Inspected the supplied 56-second reference clip and used its compact glass
+  panels, thin purple borders and vanilla inventory styling.
+- Added a fixed-list importer for the verified local Minecraft 1.21.1 client.
+  Imported textures stay Git-ignored and carry a separate source notice.
+- Replaced local placeholder icons with game textures, textured block faces,
+  diamond armor, full item names, square slots and a classic hotbar.
+- Fresh profile defaults and no-mod behavior remain intact. This is still a UI
+  prototype, with no gameplay, shader or account integration.
+- TypeScript, production bundling and interaction checks passed after changes.
+  Browser visual review remains pending.
+
+## 2026-10-10 — Blank preview startup report
+
+The user reported a blank page in the updated preview. The exact browser-side
+cause is not yet confirmed. The existing index.html depended on adjacent JS/CSS
+files and had no visible state if JavaScript failed to load. Added a self-contained
+Veil-Preview.html build embedding code, CSS, background, font and locally imported
+textures, plus visible startup diagnostics and React fatal-error reporting.
+Both ordinary bundle and standalone HTML now run the interaction suite. The
+standalone check verifies embedded assets and startup error presentation. These
+are DOM checks; browser rendering remains unverified in this environment.

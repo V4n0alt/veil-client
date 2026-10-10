@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0B0B10" />
+    <title>Veil Client — Beautiful Performance.</title>
+    <link rel="icon" href="./mark.svg" />
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body>
+    <div id="root">
+      <div
+        style="
+          font: 16px system-ui;
+          padding: 48px;
+          color: #eee;
+          background: #17141f;
+          min-height: 100vh;
+        "
+      >
+        <h1>Opening Veil…</h1>
+        <p>
+          If this stays here, open <strong>Veil-Preview.html</strong> in Edge,
+          Chrome or Firefox. It contains everything in one file.
+        </p>
+        <noscript
+          >JavaScript is disabled in this viewer. Open the file in your normal
+          browser.</noscript
+        >
+      </div>
+    </div>
+    <script>
+      (() => {
+        function showFailure(message) {
+          const root = document.getElementById("root");
+          const panel = document.createElement("div");
+          panel.style.cssText =
+            "font:16px system-ui;padding:48px;color:#eee;background:#17141f;min-height:100vh";
+          const heading = document.createElement("h1");
+          heading.textContent = "Veil couldn't open";
+          const hint = document.createElement("p");
+          hint.textContent =
+            "Open Veil-Preview.html in your normal browser. If it still fails, send the message below.";
+          const details = document.createElement("pre");
+          details.style.whiteSpace = "pre-wrap";
+          details.textContent = message;
+          panel.append(heading, hint, details);
+          root.replaceChildren(panel);
+        }
+        window.addEventListener(
+          "error",
+          (event) => {
+            if (event.target instanceof HTMLScriptElement)
+              showFailure(
+                "The preview script could not load. Use the single-file Veil-Preview.html, or extract the entire ZIP first.",
+              );
+            else if (event.error)
+              showFailure(event.message || String(event.error));
+          },
+          true,
+        );
+        window.addEventListener("veil-startup-error", (event) =>
+          showFailure(String(event.detail)),
+        );
+      })();
+    </script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
