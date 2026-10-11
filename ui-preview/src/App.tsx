@@ -15,6 +15,7 @@ import { Features } from "./screens/Features";
 import { Hud } from "./screens/Hud";
 import { Settings } from "./screens/Settings";
 import { Launcher } from "./screens/Launcher";
+import { usePointerGlow } from "./usePointerGlow";
 const screens = [
   ["Main menu", Monitor],
   ["Inventory", Backpack],
@@ -25,6 +26,7 @@ const screens = [
 ] as const;
 export function App() {
   const { screen, navigate, settings, toast } = useVeil();
+  const glowRoot = usePointerGlow(screen, Boolean(settings.reducedMotion));
   const pages: Record<Screen, React.ReactNode> = {
     "Main menu": <MainMenu />,
     Inventory: <Inventory />,
@@ -35,6 +37,7 @@ export function App() {
   };
   return (
     <div
+      ref={glowRoot}
       className={`app ${settings.reducedMotion ? "reduced-motion" : ""} ${settings.reducedBlur ? "reduced-blur" : ""} ${settings.highContrast ? "high-contrast" : ""}`}
       style={
         { "--ui-scale": Number(settings.uiScale) / 100 } as React.CSSProperties

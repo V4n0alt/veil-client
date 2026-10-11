@@ -3503,3 +3503,63 @@ kbd {
     -webkit-backdrop-filter: none;
   }
 }
+
+/* Pointer light reflects across the nearest glass surface, never intercepting input. */
+.glow-positioned {
+  position: relative;
+}
+.pointer-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  background: radial-gradient(
+    170px circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+    #c396ff30,
+    #ad75fa12 40%,
+    transparent 72%
+  );
+  transition: opacity 160ms ease-out;
+}
+.pointer-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  background: radial-gradient(
+    160px circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+    #efdbff,
+    #bb84ff88 40%,
+    transparent 75%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  transition: opacity 160ms ease-out;
+}
+.pointer-glow.glow-active::before,
+.pointer-glow.glow-active::after {
+  opacity: 1;
+}
+.reduced-motion .pointer-glow::before,
+.reduced-motion .pointer-glow::after {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce), (hover: none) {
+  .pointer-glow::before,
+  .pointer-glow::after {
+    display: none;
+  }
+}

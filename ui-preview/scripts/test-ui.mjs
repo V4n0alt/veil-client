@@ -74,6 +74,53 @@ const input = async (element, value) => {
 try {
   await settle();
   assert.equal(doc.querySelectorAll(".menu-button").length, 6);
+  await settle(); // Allow passive pointer listeners to attach after the first render.
+  const litButton = doc.querySelector(".menu-button");
+  litButton.getBoundingClientRect = () => ({
+    left: 100,
+    top: 50,
+    width: 200,
+    height: 80,
+  });
+  litButton.querySelector("span").dispatchEvent(
+    new window.PointerEvent("pointermove", {
+      bubbles: true,
+      pointerType: "mouse",
+      clientX: 150,
+      clientY: 110,
+    }),
+  );
+  await settle();
+  assert.equal(litButton.style.getPropertyValue("--pointer-x"), "25%");
+  assert.equal(litButton.style.getPropertyValue("--pointer-y"), "75%");
+  assert.ok(litButton.classList.contains("glow-active"));
+  litButton.dispatchEvent(
+    new window.PointerEvent("pointermove", {
+      bubbles: true,
+      pointerType: "mouse",
+      clientX: 250,
+      clientY: 70,
+    }),
+  );
+  await settle();
+  assert.equal(litButton.style.getPropertyValue("--pointer-x"), "75%");
+  doc
+    .querySelector(".app")
+    .dispatchEvent(new window.PointerEvent("pointerleave"));
+  assert.equal(litButton.classList.contains("glow-active"), false);
+  litButton.dispatchEvent(
+    new window.PointerEvent("pointermove", {
+      bubbles: true,
+      pointerType: "touch",
+      clientX: 150,
+      clientY: 110,
+    }),
+  );
+  await settle();
+  assert.equal(litButton.classList.contains("glow-active"), false);
+  console.log(
+    "PASS: purple highlight follows pointer coordinates, clears on exit, and ignores touch",
+  );
   await click(labelled("New profile"));
   assert.ok(doc.querySelector("dialog[open]"));
   assert.match(
