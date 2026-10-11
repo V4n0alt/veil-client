@@ -1,0 +1,23 @@
+VEIL CLIENT — INTERACTIVE UI PREVIEW
+
+Open Veil-Preview.html in Edge, Chrome or Firefox. It is self-contained.
+The developer index.html still needs all neighboring files.
+No installation or development server is required.
+
+Use the top bar to switch between Main menu, Inventory, Features, HUD, Settings
+and Launcher. Try New profile, feature search, inventory slot moves, and Edit
+layout on the HUD. Reduced motion/blur are available in Settings.
+
+This is an interactive design prototype, not a Minecraft game build.
+All HUD values and worlds are samples. Nothing installs mods or collects data.
+Fresh profiles are the default; Quality and Performance are optional.
+Changes reset when you reload the page.
+
+To test the actual vanilla Minecraft demo, use START-DEMO.cmd in the separate
+veil-demo folder. The Java classpath fix has been installed in that bundle.
+
+VIDEO REFERENCE UPDATE
+The local preview now includes normal Minecraft textures imported from this
+computer's existing game cache, classic square inventory slots, and more compact
+purple glass panels. No mods or resource packs were installed. Texture ownership
+and origin are documented in minecraft/SOURCE.txt.

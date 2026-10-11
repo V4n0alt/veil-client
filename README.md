@@ -13,7 +13,16 @@ contents shown before installation.
 See [start here](CODEX_START_HERE.md), [security](SECURITY.md),
 [roadmap](docs/ROADMAP.md), and [session record](docs/SESSION_LOG.md).
 
-## Development
+## UI design preview
+
+The owner's October 10 UI brief is implemented as a separate interactive
+[React/TypeScript prototype](ui-preview/README.md): Main Menu, Inventory,
+Features, HUD, Settings and Launcher. It includes shared tokens/components and
+Fresh-by-default profile creation. The built preview opens directly from
+`index.html`; it does not launch Minecraft or install mods. Native UI integration
+remains separate. See [design and validation notes](ui-preview/DESIGN.md).
+
+## Rust development
 
 Install Rust 1.96.0 with rustfmt and clippy (Windows: Microsoft C++ build tools
 for the default MSVC target). Then:
