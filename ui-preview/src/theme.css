@@ -8,7 +8,7 @@
   --bg-main: #0b0b10;
   --bg-soft: #14141c;
   --panel: #1b1b26;
-  --panel-overlay: rgba(20, 20, 28, 0.72);
+  --panel-overlay: rgba(28, 25, 39, 0.42);
   --border-soft: rgba(180, 140, 255, 0.25);
   --accent: #9b6bff;
   --accent-bright: #b68cff;
@@ -24,10 +24,13 @@
   --radius-control: 12px;
   --radius-card: 18px;
   --radius-panel: 24px;
-  --blur: 18px;
+  --blur: 14px;
+  --glass-tint: rgba(29, 24, 42, 0.46);
+  --glass-edge: rgba(215, 194, 255, 0.48);
+  --ease-glass: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-hover: 150ms;
-  --duration-panel: 250ms;
-  --duration-page: 300ms;
+  --duration-panel: 200ms;
+  --duration-page: 220ms;
   --shadow: 0 8px 32px #00000059;
   --font: Inter, "Segoe UI", sans-serif;
 }
@@ -35,15 +38,15 @@
 @keyframes enter {
   from {
     opacity: 0;
-    transform: translateY(7px);
+    transform: translateY(9px) scale(0.975);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 .enter {
-  animation: enter var(--duration-page) ease-out both;
+  animation: enter var(--duration-page) var(--ease-glass) backwards;
 }
 .reduced-motion *,
 .reduced-motion *::before,

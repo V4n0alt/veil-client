@@ -171,19 +171,48 @@ export function Modal({
   onClose: () => void;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const closing = useRef<Animation | null>(null);
+  const { settings } = useVeil();
   const headingId = useId();
   useEffect(() => {
-    ref.current?.showModal();
-    return () => ref.current?.close();
+    const dialog = ref.current;
+    dialog?.showModal();
+    return () => {
+      closing.current?.cancel();
+      dialog?.close();
+    };
   }, []);
+  const requestClose = () => {
+    const dialog = ref.current;
+    if (closing.current) return;
+    if (
+      !dialog?.animate ||
+      settings.reducedMotion ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      onClose();
+      return;
+    }
+    closing.current = dialog.animate(
+      [
+        { opacity: 1, transform: "scale(1)" },
+        { opacity: 0, transform: "scale(.975) translateY(4px)" },
+      ],
+      { duration: 130, easing: "cubic-bezier(.4,0,1,1)", fill: "forwards" },
+    );
+    closing.current.finished.then(onClose, () => {});
+  };
   return (
     <dialog
       ref={ref}
       className="modal"
       aria-labelledby={headingId}
-      onCancel={onClose}
+      onCancel={(event) => {
+        event.preventDefault();
+        requestClose();
+      }}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) requestClose();
       }}
     >
       <div className="modal-heading">
@@ -192,7 +221,7 @@ export function Modal({
           <h2 id={headingId}>{title}</h2>
           {subtitle && <p>{subtitle}</p>}
         </div>
-        <IconButton icon={X} label="Close dialog" onClick={onClose} />
+        <IconButton icon={X} label="Close dialog" onClick={requestClose} />
       </div>
       {children}
     </dialog>

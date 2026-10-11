@@ -66,3 +66,18 @@ a tinted potion overlay. Slots, hotbar and item names are now closer to vanilla.
 After this refinement, TypeScript, production build and existing interaction
 checks passed. Browser visual review is still pending; extracted video frames
 were inspected, but they do not validate the application's rendered layout.
+
+## Glass and motion refinement
+
+The user's video was inspected around the panel opening at 9.8 seconds and
+category changes around 14–15 seconds. Veil now uses a clearer tinted glass fill,
+a brighter inset edge, restrained purple glow and a less darkened scene behind
+Features, Settings and Launcher. Inventory keeps normal item textures and square
+slots, with the surrounding panel and slots now translucent.
+
+Panel openings use a short scale/fade (200–220ms), category content settles in
+180ms, and cards stagger by at most 50ms. Dialog dismissal uses a 130ms fade/scale
+with native modal focus retained until completion. These timings approximate the
+reference clip's feel; they are not extracted source animation values. There are
+no repeating decorative animations. Reduced motion is respected in both CSS and
+scripted dismissal, and reduced blur/high contrast provide solid panel fallbacks.

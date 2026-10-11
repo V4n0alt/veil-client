@@ -270,7 +270,10 @@ export function Settings() {
             label="Search settings"
           />
         </header>
-        <div className="content-scroll settings-content">
+        <div
+          key={section}
+          className="content-scroll settings-content content-enter"
+        >
           <div className="section-heading">
             <div>
               <h1>

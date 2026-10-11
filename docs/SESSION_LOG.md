@@ -185,3 +185,14 @@ textures, plus visible startup diagnostics and React fatal-error reporting.
 Both ordinary bundle and standalone HTML now run the interaction suite. The
 standalone check verifies embedded assets and startup error presentation. These
 are DOM checks; browser rendering remains unverified in this environment.
+
+## 2026-10-10 — Glass and motion polish
+
+- User confirmed the single-file preview works and requested stronger glass and
+  motion resembling the supplied video.
+- Inspected the reference opening and category transitions, then adjusted fills,
+  edge highlights, scene dimming, panel entrance and category/card animations.
+- Added animated dialog dismissal with cancellation cleanup and reduced-motion
+  support. Added a focused DOM check of the animation completion lifecycle.
+- Preserve original item textures, square slots, Fresh defaults and the
+  self-contained HTML delivery. Browser visual comparison remains manual.

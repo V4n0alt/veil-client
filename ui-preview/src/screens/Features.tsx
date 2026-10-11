@@ -75,7 +75,7 @@ export function Features() {
             onClick={() => navigate("Main menu")}
           />
         </header>
-        <div className="content-scroll">
+        <div key={category} className="content-scroll content-enter">
           <div className="section-heading">
             <div>
               <h1>

@@ -57,7 +57,7 @@ export function Launcher() {
           </div>
         </div>
       </aside>
-      <div className="launcher-body">
+      <div key={tab} className="launcher-body content-enter">
         <header>
           <span className="breadcrumb">
             Your space <span>/</span> {tab}

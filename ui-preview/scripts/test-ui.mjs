@@ -11,6 +11,9 @@ const window = new Window({
   },
 });
 const errors = [];
+// Happy DOM has no visual compositor; control the animation lifecycle explicitly
+// below rather than depending on its synthetic timeline for interaction checks.
+window.Element.prototype.animate = undefined;
 window.addEventListener("error", (e) => errors.push(e.message));
 let requests = 0;
 window.fetch = () => {
@@ -112,7 +115,35 @@ try {
   await click(labelled("Configure Shaders"));
   assert.ok(doc.querySelector("dialog[open]"));
   await click(labelled("Close dialog"));
+  assert.equal(doc.querySelectorAll("dialog").length, 0);
   console.log("PASS: feature toggles, search, empty state and settings dialog");
+
+  // Verify the animated close lifecycle independently of a browser compositor.
+  await click(labelled("Configure Shaders"));
+  let finishClose;
+  let cancelled = false;
+  doc.querySelector("dialog").animate = () => ({
+    finished: new Promise((resolve) => {
+      finishClose = resolve;
+    }),
+    cancel: () => {
+      cancelled = true;
+    },
+  });
+  await click(labelled("Close dialog"));
+  assert.ok(
+    doc.querySelector("dialog[open]"),
+    "dialog stays modal while closing",
+  );
+  finishClose();
+  await settle();
+  assert.equal(doc.querySelectorAll("dialog").length, 0);
+  assert.equal(
+    cancelled,
+    true,
+    "animation is cleaned up when the dialog unmounts",
+  );
+  console.log("PASS: animated dialog closes after completion and cleans up");
 
   await screen("Inventory");
   await click(labelled("Slot 1: Diamond Sword"));

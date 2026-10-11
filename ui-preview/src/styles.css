@@ -3255,3 +3255,234 @@ kbd {
     border-width: 1px;
   }
 }
+/* Frosted glass: keep the world visible behind the interface. */
+.glass,
+.window-shell,
+.launcher,
+.modal {
+  background:
+    linear-gradient(135deg, #f3dcff12 0%, transparent 38%, #a983f90a 100%),
+    var(--glass-tint);
+  border-color: var(--glass-edge);
+  backdrop-filter: blur(var(--blur)) saturate(135%);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(135%);
+  box-shadow:
+    inset 0 1px 0 #fff3,
+    inset 0 -1px 0 #b795eb12,
+    0 0 0 1px #22182b55,
+    0 14px 48px #08060d59,
+    0 0 24px #ae80ff12;
+}
+.screen-features .scene-background:after,
+.screen-settings .scene-background:after,
+.screen-launcher .scene-background:after {
+  background: linear-gradient(0deg, #09061166, #21132818 65%, #15102430);
+  backdrop-filter: none;
+}
+.window-shell .sidebar,
+.launcher-sidebar {
+  background: #1b162536;
+  border-color: #d6b4ff2c;
+}
+.window-toolbar,
+.launcher-body > header {
+  background: #ffffff06;
+  border-color: #ddc3ff2b;
+}
+.module-card,
+.settings-group,
+.profile-entry,
+.settings-banner {
+  background: linear-gradient(130deg, #fff1, #21182b25);
+  border-color: #d5b7ff40;
+  box-shadow: inset 0 1px 0 #ffffff12;
+}
+.module-card:hover {
+  background: #e8d5ff16;
+  border-color: #e6caff99;
+}
+.module-card.enabled {
+  background: #b17cef21;
+  border-color: #d6b8ff9c;
+  box-shadow:
+    inset 0 1px 0 #ffffff25,
+    0 0 16px #b386ff12;
+}
+.module-card > p,
+.setting-row p,
+.preview-note {
+  color: #d2c8dd;
+}
+.sidebar nav button,
+.launcher-sidebar nav button {
+  color: #d0c4dd;
+}
+.sidebar nav button.active,
+.launcher-sidebar nav button.active {
+  background: linear-gradient(100deg, #c2a0ff38, #c2a0ff0b);
+  border-color: #d7b8ff52;
+  box-shadow: inset 0 1px #fff2;
+  color: #f0e4ff;
+}
+.search,
+.settings-group select {
+  background: #15101d54;
+  border-color: #d1b6ef3a;
+}
+.menu-button:not(.featured):not(.exit) {
+  background: linear-gradient(110deg, #f0d7ff17, #21172d4d);
+  border-color: #e2c5ff42;
+  box-shadow:
+    inset 0 1px #fff2,
+    0 4px 20px #0002;
+}
+.menu-button.featured {
+  background: linear-gradient(115deg, #915be6b3, #c599f29e);
+  box-shadow:
+    inset 0 1px #ffeaff66,
+    0 6px 28px #9d61ea38;
+}
+.menu-button.featured:hover {
+  background: linear-gradient(115deg, #ab7cedc7, #caa5f6b8);
+}
+.modal {
+  animation: enter var(--duration-panel) var(--ease-glass) backwards;
+}
+.modal::backdrop {
+  background: #0b06193d;
+  backdrop-filter: blur(3px);
+}
+.inventory-panel.glass {
+  background: linear-gradient(135deg, #fff2, #c5b8d719), #26202c66;
+  border: 1px solid #eddaff70;
+  border-radius: 9px;
+}
+.inventory-panel h2,
+.inventory-panel .eyebrow {
+  color: #f2e9fc;
+}
+.inventory-panel header span,
+.inventory-panel .crafting small,
+.inventory-panel .crafting-row,
+.inventory-panel .inventory-divider,
+.inventory-panel footer > span {
+  color: #d3c6df;
+}
+.inventory-panel .icon-button,
+.inventory-panel footer .button {
+  color: #eee0fa;
+}
+.inventory-panel > header,
+.inventory-panel .inventory-hotbar {
+  border-color: #e8d2ff2d;
+}
+.inventory-panel .character-stage {
+  background: #1c152d66;
+  border: 1px solid #e5cfff25;
+}
+.inventory-panel .slot {
+  background: #a5a0af30;
+  border-color: #1d172c99 #e7d4ff4a #e7d4ff4a #1d172c99;
+}
+.inventory-panel .slot:hover {
+  background: #e7d7fa40;
+}
+.inventory-panel .slot.selected {
+  background: #ac83d854;
+}
+.hud-hotbar.glass {
+  background: #30223945;
+  border-color: #dfc4ff77;
+}
+
+/* Short scale/fade on opening; category contents settle independently. */
+@keyframes content-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.content-enter {
+  animation: content-reveal 180ms var(--ease-glass) backwards;
+}
+.module-card,
+.menu-buttons > .menu-button,
+.settings-group > .setting-row {
+  animation: content-reveal 220ms var(--ease-glass) backwards;
+}
+.module-card:nth-child(2),
+.menu-buttons > :nth-child(2),
+.settings-group > :nth-child(2) {
+  animation-delay: 20ms;
+}
+.module-card:nth-child(3),
+.menu-buttons > :nth-child(3),
+.settings-group > :nth-child(3) {
+  animation-delay: 35ms;
+}
+.module-card:nth-child(n + 4),
+.menu-buttons > :nth-child(n + 4),
+.settings-group > :nth-child(n + 4) {
+  animation-delay: 50ms;
+}
+.button:active,
+.icon-button:active {
+  transform: scale(0.97);
+}
+.menu-button:active {
+  transform: translateX(2px) scale(0.985);
+}
+.toggle > span {
+  transition:
+    transform 190ms var(--ease-glass),
+    background 150ms;
+}
+.module-card,
+.sidebar nav button,
+.launcher-sidebar nav button {
+  transition:
+    background 160ms,
+    border-color 160ms,
+    box-shadow 160ms;
+}
+
+/* Solid fallbacks retain contrast when blur or transparency is unavailable. */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass,
+  .window-shell,
+  .launcher,
+  .modal {
+    background: #211a2f;
+  }
+}
+.reduced-blur .glass,
+.reduced-blur .window-shell,
+.reduced-blur .launcher,
+.reduced-blur .modal,
+.high-contrast .glass,
+.high-contrast .window-shell,
+.high-contrast .launcher,
+.high-contrast .modal {
+  background: #1d1828f7;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.high-contrast .module-card,
+.high-contrast .settings-group {
+  background: #211b30;
+  border-color: #e2cbff;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .window-shell,
+  .launcher,
+  .modal {
+    background: #211a2ff7;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
