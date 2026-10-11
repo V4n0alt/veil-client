@@ -3255,33 +3255,50 @@ kbd {
     border-width: 1px;
   }
 }
-/* Frosted glass: keep the world visible behind the interface. */
+/* Clear glass: thin tint and light diffusion preserve the scenery behind it. */
 .glass,
 .window-shell,
 .launcher,
 .modal {
   background:
-    linear-gradient(135deg, #f3dcff12 0%, transparent 38%, #a983f90a 100%),
+    linear-gradient(135deg, #f3dcff09 0%, transparent 38%, #a983f905 100%),
     var(--glass-tint);
   border-color: var(--glass-edge);
-  backdrop-filter: blur(var(--blur)) saturate(135%);
-  -webkit-backdrop-filter: blur(var(--blur)) saturate(135%);
+  backdrop-filter: blur(var(--blur)) saturate(120%);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(120%);
   box-shadow:
     inset 0 1px 0 #fff3,
     inset 0 -1px 0 #b795eb12,
     0 0 0 1px #22182b55,
-    0 14px 48px #08060d59,
+    0 14px 48px #08060d30,
     0 0 24px #ae80ff12;
 }
 .screen-features .scene-background:after,
 .screen-settings .scene-background:after,
 .screen-launcher .scene-background:after {
-  background: linear-gradient(0deg, #09061166, #21132818 65%, #15102430);
+  background: linear-gradient(0deg, #09061124, transparent 65%, #15102412);
   backdrop-filter: none;
+}
+.screen-main-menu .scene-background:after {
+  background:
+    linear-gradient(90deg, #08081066, #0f0b1712 55%, transparent),
+    linear-gradient(0deg, #07070e55, transparent 55%);
+}
+.screen-inventory .scene-background:after {
+  background: linear-gradient(0deg, #08081040, #18102012);
+  backdrop-filter: none;
+}
+.window-shell,
+.launcher,
+.inventory-panel,
+.hud-widget,
+.main-menu,
+.modal {
+  text-shadow: 0 1px 3px #10091bcc;
 }
 .window-shell .sidebar,
 .launcher-sidebar {
-  background: #1b162536;
+  background: #1b162512;
   border-color: #d6b4ff2c;
 }
 .window-toolbar,
@@ -3293,7 +3310,7 @@ kbd {
 .settings-group,
 .profile-entry,
 .settings-banner {
-  background: linear-gradient(130deg, #fff1, #21182b25);
+  background: linear-gradient(130deg, #ffffff08, #21182b0c);
   border-color: #d5b7ff40;
   box-shadow: inset 0 1px 0 #ffffff12;
 }
@@ -3326,18 +3343,18 @@ kbd {
 }
 .search,
 .settings-group select {
-  background: #15101d54;
+  background: #15101d26;
   border-color: #d1b6ef3a;
 }
 .menu-button:not(.featured):not(.exit) {
-  background: linear-gradient(110deg, #f0d7ff17, #21172d4d);
+  background: linear-gradient(110deg, #f0d7ff0b, #21172d20);
   border-color: #e2c5ff42;
   box-shadow:
     inset 0 1px #fff2,
     0 4px 20px #0002;
 }
 .menu-button.featured {
-  background: linear-gradient(115deg, #915be6b3, #c599f29e);
+  background: linear-gradient(115deg, #915be666, #c599f24d);
   box-shadow:
     inset 0 1px #ffeaff66,
     0 6px 28px #9d61ea38;
@@ -3349,11 +3366,11 @@ kbd {
   animation: enter var(--duration-panel) var(--ease-glass) backwards;
 }
 .modal::backdrop {
-  background: #0b06193d;
-  backdrop-filter: blur(3px);
+  background: #0b06191a;
+  backdrop-filter: blur(1px);
 }
 .inventory-panel.glass {
-  background: linear-gradient(135deg, #fff2, #c5b8d719), #26202c66;
+  background: linear-gradient(135deg, #ffffff0c, #c5b8d708), #26202c24;
   border: 1px solid #eddaff70;
   border-radius: 9px;
 }
@@ -3377,11 +3394,11 @@ kbd {
   border-color: #e8d2ff2d;
 }
 .inventory-panel .character-stage {
-  background: #1c152d66;
+  background: #1c152d24;
   border: 1px solid #e5cfff25;
 }
 .inventory-panel .slot {
-  background: #a5a0af30;
+  background: #a5a0af16;
   border-color: #1d172c99 #e7d4ff4a #e7d4ff4a #1d172c99;
 }
 .inventory-panel .slot:hover {
@@ -3391,7 +3408,7 @@ kbd {
   background: #ac83d854;
 }
 .hud-hotbar.glass {
-  background: #30223945;
+  background: #30223920;
   border-color: #dfc4ff77;
 }
 
